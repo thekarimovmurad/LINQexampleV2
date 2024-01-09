@@ -3,7 +3,8 @@ using System.Linq;
 
 List<Employee> employeeList = Data.GetEmployees();
 List<Department> departmentList= Data.GetDepartments();
-////select and where
+
+////select and where - method syntax
 //var result = employeeList.Select(e => new
 //{
 //    FullName = e.FirstName + " " + e.LastName,
@@ -14,21 +15,86 @@ List<Department> departmentList= Data.GetDepartments();
 //    Console.WriteLine($"{item.FullName, -20} {item.AnnualSalary, 10}");
 //}
 
+////select and where - query syntax
+//var result = from emp in employeeList
+//             where emp.AnnualSalary >=500
+//             select new
+//{
+//    FullName = emp.FirstName + " " + emp.LastName,
+//    AnnualSalary = emp.AnnualSalary
+//};
+//employeeList.Add(new Employee
+//{
+//    Id = 5,
+//    FirstName = "Sam",
+//    LastName = "Altman",
+//    AnnualSalary =130000.3m,
+//    IsManager = true,
+//    DepartmentId = 2,
+//});
+//foreach (var item in result)
+//{
+//    Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
+//}
 
-var result = from emp in employeeList
-             where emp.AnnualSalary >=500
+////deferred execution example
+//var result = from emp in employeeList.GetHighSalariedEmployees()
+//             select new
+//             {
+//                 FullName = emp.LastName + " " + emp.FirstName,
+//                 AnnualSalary = emp.AnnualSalary
+//             };
+//employeeList.Add(new Employee
+//{
+//    Id = 5,
+//    FirstName = "Sam",
+//    LastName = "Altman",
+//    AnnualSalary = 130000.20m,
+//    IsManager = true,
+//    DepartmentId = 2
+
+//});
+//foreach (var item in result)
+//{
+//    Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
+//}
+
+////immediate execution example
+var result = (from emp in employeeList.GetHighSalariedEmployees()
              select new
+             {
+                 FullName = emp.LastName + " " + emp.FirstName,
+                 AnnualSalary = emp.AnnualSalary
+             }).ToList();
+employeeList.Add(new Employee
 {
-    FullName = emp.FirstName + " " + emp.LastName,
-    AnnualSalary = emp.AnnualSalary
-};
+    Id = 5,
+    FirstName = "Sam",
+    LastName = "Altman",
+    AnnualSalary = 130000.20m,
+    IsManager = true,
+    DepartmentId = 2
+
+});
 foreach (var item in result)
 {
     Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
 }
 Console.ReadKey();
 
+public static class EnumerableCollectionExtensionMethods
+{
+    public static IEnumerable<Employee> GetHighSalariedEmployees( this IEnumerable<Employee> employees )
+    {
+        foreach ( Employee emp in employees )
+        {
+            Console.WriteLine($"Accessing employee: {emp.FirstName + " " + emp.LastName}");
 
+            if (emp.AnnualSalary >= 50000)
+                yield return emp;
+        }
+    }
+}
 
 
 public class Employee
