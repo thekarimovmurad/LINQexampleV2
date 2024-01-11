@@ -52,7 +52,6 @@ List<Department> departmentList= Data.GetDepartments();
 //    AnnualSalary = 130000.20m,
 //    IsManager = true,
 //    DepartmentId = 2
-
 //});
 //foreach (var item in result)
 //{
@@ -60,26 +59,93 @@ List<Department> departmentList= Data.GetDepartments();
 //}
 
 ////immediate execution example
-var result = (from emp in employeeList.GetHighSalariedEmployees()
-             select new
-             {
-                 FullName = emp.LastName + " " + emp.FirstName,
-                 AnnualSalary = emp.AnnualSalary
-             }).ToList();
-employeeList.Add(new Employee
-{
-    Id = 5,
-    FirstName = "Sam",
-    LastName = "Altman",
-    AnnualSalary = 130000.20m,
-    IsManager = true,
-    DepartmentId = 2
+//var result = (from emp in employeeList.GetHighSalariedEmployees()
+//             select new
+//             {
+//                 FullName = emp.LastName + " " + emp.FirstName,
+//                 AnnualSalary = emp.AnnualSalary
+//             }).ToList();
+//employeeList.Add(new Employee
+//{
+//    Id = 5,
+//    FirstName = "Sam",
+//    LastName = "Altman",
+//    AnnualSalary = 130000.20m,
+//    IsManager = true,
+//    DepartmentId = 2
+//});
+//foreach (var item in result)
+//{
+//    Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
+//}
 
-});
-foreach (var item in result)
-{
-    Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}");
-}
+////join operation example - method syntax
+//var results = departmentList.Join(employeeList,
+//    department => department.Id,
+//    employee => employee.DepartmentId,
+//    (department, employee) => new
+//    {
+//        FullName = employee.FirstName + " " + employee.LastName,
+//        AnnualSalary = employee.AnnualSalary,
+//        DepartmentName = department.LongName,
+//    });
+//foreach (var item in results)
+//{
+//    Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}\t{item.DepartmentName}");
+//}
+
+////join operation example - query syntax
+//var results = from dep in departmentList
+//             join emp in employeeList
+//             on dep.Id equals emp.DepartmentId
+//             select new
+//             {
+//                 FullName = emp.FirstName + " " + emp.LastName,
+//                 AnnualSalary = emp.AnnualSalary,
+//                 DepartmentName = dep.LongName,
+//             };
+//foreach (var item in results)
+//{
+//    Console.WriteLine($"{item.FullName,-20} {item.AnnualSalary,10}\t{item.DepartmentName}");
+//}
+
+////group join operator example - method syntax
+//var result = departmentList.GroupJoin(employeeList,
+//    dep => dep.Id,
+//    emp =>emp.DepartmentId,
+//    (dep,employeesGroup) => new
+//    {
+//        Employees = employeesGroup,
+//        DepartmentName = dep.LongName
+//    });
+//foreach (var item in result)
+//{
+//    Console.WriteLine($"Department name: {item.DepartmentName}");
+//    foreach (var employee in item.Employees)
+//    {
+//        Console.WriteLine($"\t{employee.FirstName} {employee.LastName}");
+//    }
+//}
+
+////group join operator example - query syntax
+//var result = from dep in departmentList
+//             join emp in employeeList
+//             on dep.Id equals emp.DepartmentId
+//             into employeeGroup
+//             select new
+//             {
+//                 Employees = employeeGroup,
+//                 DepartmentName = dep.LongName
+//             };
+//foreach (var item in result)
+//{
+//    Console.WriteLine($"Department name: {item.DepartmentName}");
+//    foreach (var employee in item.Employees)
+//    {
+//        Console.WriteLine($"\t{employee.FirstName} {employee.LastName}");
+//    }
+//}
+
 Console.ReadKey();
 
 public static class EnumerableCollectionExtensionMethods
@@ -96,7 +162,7 @@ public static class EnumerableCollectionExtensionMethods
     }
 }
 
-
+#region Data and structure
 public class Employee
 {
     public int Id { get; set; }
@@ -188,3 +254,4 @@ public static class Data
         return departments;
     }
 }
+#endregion
